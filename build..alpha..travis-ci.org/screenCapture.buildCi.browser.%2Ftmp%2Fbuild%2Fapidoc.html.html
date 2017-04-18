@@ -1,4 +1,4 @@
-<div class="apidocDiv">
+<html><head></head><body><div class="apidocDiv">
 <style>
 /*csslint
 */
@@ -47,15 +47,10 @@
 }
 </style>
 <h1>api documentation for
-    <a
-
-    >gulp-minify-css (v1.2.4)</a>
+    <a>gulp-minify-css (v1.2.4)</a>
 </h1>
 <h4>Minify css with clean-css.</h4>
-<div class="apidocSectionDiv"><a
-    href="#apidoc.tableOfContents"
-    id="apidoc.tableOfContents"
-><h1>table of contents</h1></a><ol>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
 
     <li class="apidocModuleLi"><a href="#apidoc.module.gulp-minify-css">module gulp-minify-css</a><ol>
 
@@ -93,11 +88,11 @@
         var fileOptions = objectAssign({target: file.path}, options);
 
         // https://github.com/jakubpawlowicz/clean-css/blob/v3.3.0/bin/cleancss#L83-L84
-        if (fileOptions.relativeTo === undefined &#x26;&#x26; (fileOptions.root || file.path)) {
+        if (fileOptions.relativeTo === undefined &amp;&amp; (fileOptions.root || file.path)) {
           fileOptions.relativeTo = path.dirname(path.resolve(options.root || file.path));
         }
 
-        if ((options.sourceMap === true || options.sourceMap === undefined) &#x26;&#x26; file.sourceMap) {
+        if ((options.sourceMap === true || options.sourceMap === undefined) &amp;&amp; file.sourceMap) {
           fileOptions.sourceMap = JSON.stringify(file.sourceMap);
         }
 
@@ -112,7 +107,7 @@
 
         new CleanCSS(fileOptions).minify(cssFile, function(errors, css) {
           if (errors) {
-            done(errors.join(&#x27; &#x27;));
+            done(errors.join(' '));
             return;
           }
 
@@ -138,7 +133,7 @@
 
       run(file, function(err, contents) {
         if (err) {
-          self.emit(&#x27;error&#x27;, new PluginError(&#x27;gulp-minify-css&#x27;, err, {fileName: file.path}));
+          self.emit('error', new PluginError('gulp-minify-css', err, {fileName: file.path}));
         } else {
           file.contents = contents;
           self.push(file);
@@ -160,3 +155,4 @@
     ]
 </div>
 </div>
+</body></html>

@@ -59,12 +59,98 @@
 
     <li class="apidocModuleLi"><a href="#apidoc.module.gulp-minify-css">module gulp-minify-css</a><ol>
 
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.gulp-minify-css.gulp-minify-css">
+            function <span class="apidocSignatureSpan"></span>gulp-minify-css
+            <span class="apidocSignatureSpan">(options)</span>
+            </a>
+
+        </li>
+
     </ol></li>
 
 </ol></div>
 
 <div class="apidocSectionDiv">
 <h1><a href="#apidoc.module.gulp-minify-css" id="apidoc.module.gulp-minify-css">module gulp-minify-css</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.gulp-minify-css.gulp-minify-css" id="apidoc.element.gulp-minify-css.gulp-minify-css">
+        function <span class="apidocSignatureSpan"></span>gulp-minify-css
+        <span class="apidocSignatureSpan">(options)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">function gulpMinifyCSS(options) {
+  options = options || {};
+
+  return new Transform({
+    objectMode: true,
+    transform: function modifyContents(file, enc, cb) {
+      var run = new VinylBufferStream(function(buf, done) {
+        var fileOptions = objectAssign({target: file.path}, options);
+
+        // https://github.com/jakubpawlowicz/clean-css/blob/v3.3.0/bin/cleancss#L83-L84
+        if (fileOptions.relativeTo === undefined &#x26;&#x26; (fileOptions.root || file.path)) {
+          fileOptions.relativeTo = path.dirname(path.resolve(options.root || file.path));
+        }
+
+        if ((options.sourceMap === true || options.sourceMap === undefined) &#x26;&#x26; file.sourceMap) {
+          fileOptions.sourceMap = JSON.stringify(file.sourceMap);
+        }
+
+        var cssFile;
+
+        if (file.path) {
+          cssFile = {};
+          cssFile[file.path] = {styles: buf.toString()};
+        } else {
+          cssFile = buf.toString();
+        }
+
+        new CleanCSS(fileOptions).minify(cssFile, function(errors, css) {
+          if (errors) {
+            done(errors.join(&#x27; &#x27;));
+            return;
+          }
+
+          if (css.sourceMap) {
+            var map = JSON.parse(css.sourceMap);
+            map.file = path.relative(file.base, file.path);
+            map.sources = map.sources.map(function(src) {
+              if (/^(https?:)?\/\//.test(src)) {
+                return src;
+              }
+
+              return path.relative(file.base, src);
+            });
+
+            applySourceMap(file, map);
+          }
+
+          done(null, new Buffer(css.styles));
+        });
+      });
+
+      var self = this;
+
+      run(file, function(err, contents) {
+        if (err) {
+          self.emit(&#x27;error&#x27;, new PluginError(&#x27;gulp-minify-css&#x27;, err, {fileName: file.path}));
+        } else {
+          file.contents = contents;
+          self.push(file);
+        }
+        cb();
+      });
+    }
+  });
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
 
 </div>
 
